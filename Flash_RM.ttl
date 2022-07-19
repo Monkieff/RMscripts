@@ -1,0 +1,35 @@
+;/////// FLASH RM ///////
+;
+; This script is used for flashing RM.
+; Make sure the setup items are correct before execution.
+;
+;========================
+;////// Setup Item //////
+RM_IP='192.168.0.101'
+ROM_File='m2010fwimage-1.1.19.10.tgz'
+;========================
+;/// Connect to RM IP ///
+strconcat RM_Connect RM_IP
+strconcat RM_Connect ' /ssh /auth=password /user=root /passwd=$pl3nd1D'
+;========================
+
+;===========
+:Start_Flash
+;===========
+
+connect RM_Connect
+pause 10
+strconcat flashrm "set manager fwupdate"
+strconcat flashrm ROM_File
+sendln flashrm
+
+pause 1800
+
+;==============
+:Check_Firmware
+;==============
+
+sprintf2 checkrm "show manager version"
+sendln checkrm
+
+

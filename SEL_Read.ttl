@@ -1,0 +1,42 @@
+;/////// SEL READ ///////
+;
+; This script is used for reading SEL from DUT.
+; Start from $Start_Layer to $End_Layer;
+; Make sure the setup items are correct before execution.
+;
+;========================
+;////// Setup Item //////
+RM_IP='192.168.0.101'
+Start_Layer=8
+End_Layer=17
+;========================
+;/// Connect to RM IP ///
+strconcat RM_Connect RM_IP
+strconcat RM_Connect ' /ssh /auth=password /user=root /passwd=$pl3nd1D'
+;========================
+
+;=========================
+;/// CREATE TIME STAMP ///
+gettime timestr "%Y%m%d-%H%M%S"
+sprintf2 logfile 'SEL_%s.log' timestr
+;=========================
+
+;==============
+:Start_Reconfig
+;==============
+
+i = Start_Layer
+do while i <= End_Layer
+	connect RM_Connect
+	pause 10
+	logopen logfile
+	pause 10
+	sprintf2 selread 'show system log read -i %d' i
+	sendln selread
+	pause 30
+	logclose
+	paus0 10
+	disconnect 0
+	pause 10
+	i = i+1
+loop

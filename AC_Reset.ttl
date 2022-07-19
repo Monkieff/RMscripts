@@ -1,0 +1,46 @@
+;////// AC RESET //////
+;
+; This script is used for resetting the DUTs.
+; Start from $Start_Layer to $End_Layer;
+; Make sure the setup items are correct before execution.
+;
+;======================
+;///// Setup Item /////
+RM_IP='192.168.0.101'
+Start_Layer=8
+End_Layer=17
+;======================
+;// Connect to RM IP //
+strconcat RM_Connect RM_IP
+strconcat RM_Connect ' /ssh /auth=password /user=root /passwd=$pl3nd1D'
+;======================
+
+;========
+:AC_Reset
+;========
+
+connect RM_Connect
+
+i = Start_Layer
+do while i <= End_Layer
+	pause 10
+	sprintf2 poweroff "set manager port off -i %d -f" i
+	sendln poweroff
+	pause 10
+	i = i+1
+loop
+
+pause 180
+
+i = Start_Layer
+do while i <= End_Layer
+	pause 10
+	sprintf2 poweron "set manager port on -i %d" i
+	sendln poweron
+	pause 10
+	i = i+1	
+loop
+
+
+
+

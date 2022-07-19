@@ -1,0 +1,37 @@
+;////// CP RECONFIG //////
+;
+; This script is used for Reconfiging the Celestial Peak.
+; Start from $Start_Layer to $End_Layer;
+; Make sure the setup items are correct before execution.
+;
+;========================
+;////// Setup Item //////
+RM_IP='192.168.0.101'
+Start_Layer=8
+End_Layer=17
+;========================
+;/// Connect to RM IP ///
+strconcat RM_Connect RM_IP
+strconcat RM_Connect ' /ssh /auth=password /user=root /passwd=$pl3nd1D'
+;========================
+
+;==============
+:Start_Reconfig
+;==============
+
+i = Start_Layer
+do while i <= End_Layer
+	connect RM_Connect
+	pause 10
+	sprintf2 connectcp 'start sesssion serial -i %d -b 1' i
+	sendln connectcp
+	pause 10
+	sendln
+	sendln "echo 'overlake' | sudo -S modprobe catapult"
+	pause 5
+	sendln "echo 'overlake' | sudo -S fpgadiagnostics -reconfigapp"
+	pause 10
+	disconnect 0
+	pause 10
+	i = i+1
+loop
